@@ -1,0 +1,75 @@
+Let's lay it all OUT:
+
+Section A - Database:
+
+The database will be comprised of several collections:
+
+1. Employee data: { _id: <'EMP' + 4-digit number, in ascending order - manager = 1001>, username: "Danager", password: "123456", isAdmin: true, "startedWorking": "04-20-2020", "wage": "$15/hour" }
+Notes: We might want to allow for more than one manager so reserve numbers 1000-1999 for administrative staff; regular employees start at 2000..
+Each employee will be represented by an object, containing their username, pw, admin status, start date with the company, and hourly wage... should we get far enough, employee performance records might go here if they're not detailed enough to warrant a separate category (could even be a nested object if they do get somewhat complex).
+
+2. Schedule Data: { _id: <'SCHED' + [date string] >,  "Dan_start" : "10:00", "Dan_finish": "17:00", "Bob_start": "10:00", "Bob_finish": "17:00", ...}
+Notes: Schedule will be divided into one object per date, with the object itself being comprised of an _id tag and then start/finish times for each employee.
+This will make it easier to see how many people are working on a given date, and add/ remove one person to the schedule without affecting everyone else.
+The server/handler function can validate that a name going into the database always gets associated with both a start and finish value.
+
+3. Punchclock interactions: { _id: <'PUNCH' + [date string] >, "<username>-<in/out>": "10:01", "<username>-<in/out>": "17:04", ...}
+Notes: Each object will represent one day's worth of punches, so it will be an object with a bunch of keys, named for the employee making the punch and the type of punch (in/out... lunchbreaks?? maybe for simplicity's sake lunches will be 'on the company' initially) and the values being the actual punch times.
+
+4. Pay Stubs: { _id: <'PAY' + [week of x date string]>, "<employeeName>": { "totalHours": 38.5, "amtPaid": "$1000", "Monday": [<start time>, <end time>]...}}
+Notes: Generated once per week, so each object will be a list of each employee's wages, calculated by a handler function on the FE/server side based on each employee's hours worked in that week once they're validated by the manager. Each employee will be a sub-object within the weekly data document, with values for their total hours worked, punch times for each day they worked that week (as arrays?? getting a bit complex here but not unreasonably so...)
+
+5. Notification logs: { _id: <'NOTIF' + [unique identifier number]>, "sender": "Dan", "recipient": "Bob", "content": "You are late, Bob!", "acknowledged": "<timestamp"}
+
+Section B - Server endpoints: (functions to come later; should be more or less apparent given what's needed of each endpoint)
+
+*** Bear in mind that the order in which these items appear in the actual endpoint list should be carefully thought out based on the 'looseness' of URL endpoints with varying params... ***
+
+1. GET (?) '/' Homepage: 
+Notes: We'll have the punchclock on the main page, as well as the sign-in field, so not much actual information is needed FROM the server at this endpoint but a heck of a lot will go to it from here... HOWEVER, and this is relevant below, the server should query the DB when the page is opened up to get the names and id numbers of all employees scheduled to work on the current day, so it can use those values to validate and update the punchclock's activities (block people who aren't scheduled from punching in, and correctly identifying those who are scheduled when they enter their 4-digit employee code).
+
+*** SIGN-UP AND LOGIN ENDS ***
+
+2. POST '/enter-key/' - Employees enter their unique one-time passkeys here (sent, presumably by email, from the manager when they're 'hired') to create an account. They will then be taken to the signup page to provide additional information...
+Notes:
+
+3. POST '/create-account/' - Employees enter their personal info on this page which submits it to the database.
+Notes:
+
+4. POST '/login/' - Generic login endpoint for employees and managers; brings them to their main page ('/schedule/:employee-name') <- see below...
+Notes: Different endpoint for employees and managers not necessary if the server can recognize the difference!? If so, the server must know who's a regular worker and who's admin when it signs them in... could be part of the server's initial data fetch from the DB on startup...
+
+*** PUNCH-CLOCK INTERACTIONS ***
+
+5. POST '/punchin/:employee-code' - Add the current time to the day's punchclock record for an employee, based on their 4-digit code.
+Notes: Server will need to have the data on-hand to convert the 4-digit code to an employee's name for the punchclock record update.
+
+6. POST '/punchout/:employee-code' - Add the current time to the day's punchclock record for an employee, based on their 4-digit code.
+Notes: Server will need to have the data on-hand to convert the 4-digit code to an employee's name for the punchclock record update.
+
+*** EMPLOYEE ENDPOINTS ***
+
+7. GET '/schedule/:employee-name' - Get the next week's schedule for a particular employee.
+Notes: I hope very much it will be feasible to have the person's name in the URL as opposed to their number; that's all they are is numbered drones but it would be better for morale not to rub this in peoples' faces...
+
+8. GET '/timecard/:employee-name' - View the punchclock records and paystubs for a particular employee.
+Notes: Should have a distinct display for shifts that have been validated by a manager vs ones that haven't... might have to add a line in the punchclock records (DB section 3) for 'approvedByManager' for each day's punch records.
+
+9. GET '/notifications/:employee-name' - View notifications for a particular employee from their manager.
+Notes: This will initially be a one-way exchange although it shouldn't be too much of a stretch for employees to be able to reply or at least acknowledge receipt of a message.
+
+*** MANAGER ENDPOINTS ***
+
+10. POST '/admin/post-schedule/:weekof420-426' - Post the schedule for a given time period from the manager's account.
+Notes: PREFIX everything to do with the manager with '/admin/' to avoid things getting messy. Also, tie in the current user's status with permission to visit any of the admin pages!!
+Also, going to have to give some fairly careful thought to the exact phrasing of the ':weekof<date-to-date>' to avoid some hairy-looking date strings...
+:weekstart-04-24??
+... Or do we need the week suffix at all? Perhaps not, if the info can be contained in the req.body...
+
+11. GET '/admin/view-schedule' - Display all current schedules for the manager to see/edit from their console.
+Notes: Keeping related but different endpoints distinct is a delicate task. Make a crib notes sheet when they're all nailed down for quick reference!
+
+12. GET '/admin/view-punches/<?start=[date]&end=[date]' - Show all punchclock records for a chosen period (determined by query params); default will be to show YESTERDAY's clock activity.
+Notes: Manager's FE should have a slider/buttons/calendar to set the date range in question for an easy fetch of the data needed.
+
+13. POST '/admin/send-notification' - Send a message to a particular employee. All notifications should be kept in the DB for a record.
