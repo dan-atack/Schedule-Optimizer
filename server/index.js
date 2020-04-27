@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 
 // server functions:
 
-const loginPage = require('./functions/serverFunctions');
+const { loginPage, listEmployees } = require('./functions/serverFunctions');
 
 const PORT = 8080;
 
@@ -27,7 +27,8 @@ express()
   .use(express.urlencoded({ extended: false }))
   .use('/', express.static(__dirname + '/'))
 
-  // endpoints: will relocate in due time:
-  .get('/', loginPage)
+  // endpoints: must all be prefaced with '/api/' for the FE to not get confused!
+  .post('/api/login', loginPage)
+  .get('/api/admin/employees', listEmployees)
 
   .listen(PORT, () => console.log(`listening on port ${PORT}`));
