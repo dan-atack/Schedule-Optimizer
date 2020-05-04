@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams, Route } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { getEmployeesFromDB } from '../../actions';
 // Components:
 import Unauthorized from '../../components/Unauthorized';
 import GeneralSidebar from '../../components/GeneralSidebar';
@@ -14,6 +15,18 @@ import PunchRecords from '../PunchRecords';
 import Payroll from '../Payroll';
 
 function ManagerHome() {
+  // We'll fetch the names of the employees in the DB as soon as the manager's page loads and put them into local state for use
+  // on any of the sub-pages that might need them:
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    fetch('/api/admin/employees')
+      .then((res) => {
+        return res.json();
+      })
+      .then((result) => {
+        dispatch(getEmployeesFromDB(result.data));
+      });
+  }, []);
   // display name of administrator on their dashboard:
   const managerName = useSelector((state) => state.currentUser.userName);
   // And now for something more elaborate: make it so this page can't be seen unless you are logged in as an ADMINISTRATOR:
@@ -26,7 +39,7 @@ function ManagerHome() {
       <Unauthorized message='You must be signed in as an administrator to access this page.' />
     );
     // And so that, in the case that there are multiple managers, they can't snoop on eachother, let's restrict access by name as well:
-  } else if (username != managerName.split(' ').join('')) {
+  } else if (username !== managerName.split(' ').join('')) {
     return (
       <Unauthorized
         message={`You must be logged in as ${username} to view this person's page.`}
@@ -41,14 +54,16 @@ function ManagerHome() {
       <GeneralSidebar style={{ gridArea: 'general' }} username={username} />
       <MainDisplay style={{ gridArea: 'main' }}>
         <Route path={`/admin/${username}/create-schedule`}>
-          {/* still need to consider if all schedules (past, pres and future) can use a common Schedule box component... */}
-          <Schedule />
+          {/* still need to consider if all schedules (past, pres and future) can use a common Schedule box component... 
+          ... After due consideration, sadly it has been decided that they can NOT. Still, we can probably copy most
+          of what we need, so no big loss...*/}
+          <Schedule period={'new'} />
         </Route>
         <Route path={`/admin/${username}/current-schedule`}>
-          <Schedule />
+          <Schedule period={'current'} />
         </Route>
         <Route path={`/admin/${username}/previous-schedule`}>
-          <Schedule />
+          <Schedule period={'previous'} />
         </Route>
         <Route path={`/admin/${username}/employees`}>
           <EmployeesList />
@@ -63,7 +78,6 @@ function ManagerHome() {
           <Payroll />
         </Route>
       </MainDisplay>
-      <SpecSidebar style={{ gridArea: 'specific' }}></SpecSidebar>
     </Layout>
   );
 }
@@ -72,7 +86,7 @@ const Layout = styled.div`
   display: grid;
   grid-template-areas:
     'dash dash dash'
-    'general main specific';
+    'general main main';
   grid-template-columns: 2fr 9fr 3fr;
   grid-template-rows: 1fr 8fr;
   height: 100vh;
@@ -89,12 +103,6 @@ const MainDisplay = styled.div`
   text-align: center;
   height: 100%;
   border: 1px solid black;
-`;
-
-const SpecSidebar = styled.div`
-  text-align: center;
-  border: 1px solid black;
-  height: 100%;
 `;
 
 export default ManagerHome;

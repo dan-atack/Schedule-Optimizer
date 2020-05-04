@@ -26,6 +26,7 @@ const loginPage = async (req, res) => {
                 status: 200,
                 // if login is good, send back the user's name and admin status for the FE to use:
                 userData: {
+                  _id: result._id,
                   userName: result.userName,
                   isAdmin: result.isAdmin,
                 },
@@ -62,14 +63,18 @@ const listEmployees = async (req, res) => {
       .find()
       .toArray((err, result) => {
         if (result) {
-          // employee 'list' will be an object to make it more searchable:
-          let data = {};
+          // With employee data as an array:
+          let data = [];
           result.forEach((employee) => {
-            data[`${employee._id}`] = {
+            data.push({
               _id: employee._id,
               userName: employee.userName,
               isAdmin: employee.isAdmin,
-            };
+              hireDate: employee.hireDate,
+              wage: employee.wage,
+              title: employee.title,
+              email: employee.email,
+            });
           });
           res.status(200).json({ status: 200, data: data });
         } else {
@@ -83,4 +88,68 @@ const listEmployees = async (req, res) => {
   }
 };
 
-module.exports = { loginPage, listEmployees };
+// Get ID's for all employees who are working today:
+const listScheduledEmployees = async (req, res) => {
+  const client = new MongoClient('mongodb://localhost:27017', {
+    useUnifiedTopology: true,
+  });
+  try {
+    await client.connect();
+    const db = client.db('optimizer');
+    await db
+      // Upgrade this later to be contingent on the schedule; for now just get all the ID's and only the ID's:
+      .collection('employees')
+      .find()
+      .toArray((err, result) => {
+        if (result) {
+          let data = [];
+          result.forEach((employee) => {
+            // literally just the numbers:
+            data.push(employee._id.slice(4));
+          });
+          res.status(200).json({ status: 200, data: data });
+        } else {
+          res.status(404).json({ status: 404, message: err });
+        }
+      });
+  } catch {
+    console.log(
+      'ruh roh! Looks like we did not fetch all the employees due to human error.'
+    );
+  }
+};
+
+const setupDateInDB = async (req, res) => {
+  const date = req.body.date;
+  const client = new MongoClient('mongodb://localhost:27017', {
+    useUnifiedTopology: true,
+  });
+  try {
+    await client.connect();
+    console.log('connecting');
+    const db = client.db('optimizer');
+    const r = await db
+      .collection('test_punches_vi')
+      // add the 'PUNCH-' prefix to the id, just so we can distinguish it from other date-stamped items in the DB:
+      .insertOne({ _id: `PUNCH-${date}` });
+    assert.equal(1, r.insertedCount);
+    res.status(201).json({
+      status: 201,
+      message: 'New date created in punchclock activity database',
+    });
+    client.close();
+    console.log('Date added successfully.');
+  } catch {
+    res
+      .status(208)
+      .json({ status: 208, message: 'Date already exists in database.' });
+    client.close();
+  }
+};
+
+module.exports = {
+  loginPage,
+  listEmployees,
+  listScheduledEmployees,
+  setupDateInDB,
+};

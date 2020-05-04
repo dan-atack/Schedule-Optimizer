@@ -12,10 +12,11 @@ The database will be comprised of several collections:
 Notes: We might want to allow for more than one manager so reserve numbers 1000-1999 for administrative staff; regular employees start at 2000..
 Each employee will be represented by an object, containing their username, pw, admin status, start date with the company, and hourly wage... should we get far enough, employee performance records might go here if they're not detailed enough to warrant a separate category (could even be a nested object if they do get somewhat complex).
 
-2. Schedule Data: { _id: <'SCHED' + [date string] >,  "Dan_start" : "10:00", "Dan_finish": "17:00", "Bob_start": "10:00", "Bob_finish": "17:00", ...}
+2. Schedule Data: { _id: <'SCHED' + [date string] >,  shifts: { "EMP1001": { role: "Boss Mang", start: 9, finish: 17 }, "EMP2001": { role: "supervisor", start: 9, finish: 17 }, ... } }
 Notes: Schedule will be divided into one object per date, with the object itself being comprised of an _id tag and then start/finish times for each employee.
 This will make it easier to see how many people are working on a given date, and add/ remove one person to the schedule without affecting everyone else.
 The server/handler function can validate that a name going into the database always gets associated with both a start and finish value.
+**** Update: Scheduled shift objects will now have this form: "EMP-1001" : { "start": "10:00", "finish": "17:00", "role": "Boss Mang" } <-- 3 bits of info: start, finish, and role - the date is the name of the collection itself and the employee will be the key that leads to the 3 values.
 
 3. Punchclock interactions: { _id: <'PUNCH' + [date string] >, "<username>-<in/out>": "10:01", "<username>-<in/out>": "17:04", ...}
 Notes: Each object will represent one day's worth of punches, so it will be an object with a bunch of keys, named for the employee making the punch and the type of punch (in/out... lunchbreaks?? maybe for simplicity's sake lunches will be 'on the company' initially) and the values being the actual punch times.
@@ -107,11 +108,45 @@ Section C - The Front End: REACT
 
 *** Manager's home page: 
 
-4. FE address: '/admin/:username' The dashboard for our managerial activities!
+1. FE address: '/admin/:username' The dashboard for our managerial activities!
 
 *** Employee's home page:
 
-5. FE address: '/employee/:username' <--- Note, the username will come afterwards when Redux is incorporated.
+2. FE address: '/employee/:username' <--- Note, the username will come afterwards when Redux is incorporated.
+
+3. Buttons link to various sub-pages for editing and creating new schedules, viewing older ones, payroll, notifications etc. all on a sidebar so the main area is uncrowded and open.
+
+*** Schedule View Page Components:
+
+1. Options Side bar for RHS (tools for building a schedule)
+	
+	A) Radio buttons for time display options (by hour or by shift) --> NOTE: develop the 'by shift' paradigm first!
+
+	B) Input box for number of shifts per day (for 'by shift' option only)
+
+	C) List of employees available, which live updates to show their number of total shifts and hours scheduled (and est. wages from working those shifts)
+
+	D) Employee Details box - shows more information about the selected employee (brought up by clicking their name in the list)
+
+	E) Drag-and-drop scheduling: you can drag an employee's name from either the list (C) or the details box (D) into a slot on the schedule to assign them to that spot..
+
+2. Schedule box: Number of rows is determined by time display option and, in the case of 'by shift' option being selected, the number of shifts per day.
+
+	A) Hour Box: The standard cell in the schedule when 'by hour' is selected. Props: { list of employees working at that time, list of roles needed to be filled}
+
+	B) Shift Box: The standard cell in the schedule when 'by shift' is selected.
+
+	C) Role Slot: The subdivision of a shift box: Initially made to contain just the name of the position and then filled by dragging in an employee.
+
+	D) Times Column: Leftmost column; number of divisions (shifts) determined by counter in options bar or by hitting 'add/remove shift' buttons.
+
+	E) Shift start/end times: input fields/adjustable values for the start/end time of each shift in the times column.
+
+	F) Day column: Represents one day of the week, divided into shifts, which are subdivided into 'roles'
+
+	G) Total hours/wages calculator: Updates in real-time to display the total projected hours worked and wages to be paid for each date column, as well as for the whole week's schedule.
+
+3. What of Redux? We'll add the employees to redux state as they're added to the schedule, and that will become the proto-schedule (need to have a 'save schedule' button too to add the sched to the DB... Also a new bit of data for schedule objects in the db: isDraft: true/false = only non-draft schedules will be visible to employees (only post when it's ready but the manager can save and edit over multiple sessions))
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

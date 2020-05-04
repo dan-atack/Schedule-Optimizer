@@ -27,6 +27,7 @@ function LoginBox() {
         if (reply.status === 200) {
           dispatch(
             signInUser({
+              _id: reply.userData._id,
               userName: reply.userData.userName,
               isAdmin: reply.userData.isAdmin,
             })
@@ -62,8 +63,6 @@ function LoginBox() {
     ev.preventDefault();
     submitLoginData({ userId: idInput.value, pw: pwInput.value });
   };
-  // we'll migrate this to redux very soon but not bad for a start:
-  const [currentUser, setCurrentUser] = React.useState(null);
 
   return (
     <Box>
@@ -103,7 +102,8 @@ function LoginBox() {
 }
 
 const Box = styled.div`
-  border: 1px solid black;
+  border: 1px solid whitesmoke;
+  border-radius: 8px;
 `;
 
 const FormArea = styled.form`
