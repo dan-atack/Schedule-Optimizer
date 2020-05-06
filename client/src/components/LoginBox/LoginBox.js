@@ -39,7 +39,9 @@ function LoginBox() {
                 `/admin/${reply.userData.userName.split(' ').join('')}`
               )
             : history.push(
-                `/employee/${reply.userData.userName.split(' ').join('')}`
+                `/employee/${reply.userData.userName
+                  .split(' ')
+                  .join('')}/schedule`
               );
         } else {
           console.log(reply.message);

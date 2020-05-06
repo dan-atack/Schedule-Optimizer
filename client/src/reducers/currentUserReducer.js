@@ -24,6 +24,14 @@ export default function currentUserReducer(state = initialState, action) {
         draftState.shifts = action.shifts;
       });
     }
+    case 'LOGOUT_USER': {
+      return {
+        ...state,
+        userName: '',
+        isAdmin: false,
+        shifts: [],
+      };
+    }
     default: {
       return state;
     }

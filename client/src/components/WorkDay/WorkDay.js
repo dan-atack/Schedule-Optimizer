@@ -5,16 +5,15 @@ import ScheduleBlob from '../ScheduleBlob';
 
 function WorkDay({ day, date }) {
   const shifts = useSelector((state) => state.currentUser.shifts);
-  console.log(shifts);
   const [shift, setShift] = React.useState(null);
   React.useEffect(() => {
+    // set shift to null whenever date changes, to eliminate residual shifts from previous renders:
+    setShift(null);
     shifts.forEach((shift) => {
-      if (shift.date === date) setShift(shift.shift); // !!!!!
-      console.log(shift);
+      // then, if a shift matches the current date, set it as THE SHIFT and render:
+      if (shift.date === date) setShift(shift.shift);
     });
-  }, [shifts]);
-  // nulls represent the worker not having a shift that day, so filter them out here:
-  if (shift !== null) console.log(shift.start, shift.finish);
+  }, [shifts, date]);
   try {
     return (
       <Day>

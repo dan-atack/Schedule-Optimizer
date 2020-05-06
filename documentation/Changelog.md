@@ -54,7 +54,7 @@ Checkpoint - Version 0.0.1: Whatever is done on Sunday night goes to GH as V.0.1
 
 1. Fetch and display those names - 'forget about the Redux!' ... Obvs we love redux but this isn't a job for it so let's just get the employee names and worry about local state when it's really needed.
 
-## 2. Make the Schedule display component:
+2. Make the Schedule display component:
 
 3. Clear the day names from the schedule page and remove the RHS sidebar from the main page and add separately to individual sub-pages (sidebar position/width/existence depends on which page you're visiting)
 
@@ -100,7 +100,7 @@ Checkpoint - Version 0.0.1: Whatever is done on Sunday night goes to GH as V.0.1
 
 24. In the meantime, experiment with the actual schedule visual display by rendering a schedule blob (new component name!) on Bob's page with some imaginary data.
 
-### 25. Develop punchclock UI:
+25. Develop punchclock UI:
 
 26. New component to isolate the punchclock module: contains In/Out buttons and an input field for employee # (req'd)
 
@@ -116,22 +116,64 @@ Checkpoint - Version 0.0.1: Whatever is done on Sunday night goes to GH as V.0.1
 
 32. Allow manager to modify the database by reassigning punches' validation status from their screen (each LI will contain a button element to approve the punch)
 
-### 33. Validated shifts should refresh when their status is changed... can we put the useSelector in a useEffect perhaps? doubtful, so let's consider this before proceding to the payroll question...
+Sunday night: Git push again and reevaluate remaining priorities.
 
-#### 34. Validated shifts are listed by employee name on the payroll page
+## Version 0.3.0
 
-#### 35. Employees have a wage associated with their names; use this plus their accumulated hours to get a pay number for each worker.
+1. Validated shifts should refresh when their status is changed... have the server echo the updated data back to the FE if the database update is good, then dispatch that immediately to replace the (non-validated) data in state (selector then fires automatically).
 
-### 36. Fill out employee profile page to add a sidebar (design then implement) with buttons and pages for punch records, notifications and payroll records (use blank pages to start).
+2. Add a 'show yesterday' button as an intermediate step towards showing more dates.
 
-### Sunday night: Git push again and reevaluate remaining priorities.
+3. Include a provision in the punch display reducer to only show the requested date, and to prevent duplication in the list through pressing multiple buttons (or the same button over and over). --> Very easy: simply clear the list and reload it each time the button is pressed.
+
+4. Include a field in the Punch Display page that indicates which date is being shown.
+
+5. Wire up the show last week and show all buttons to do their respective things. This will require the addition of a generator for a range of dates for the fetch request
+
+6. Validated shifts are listed by employee name on the payroll page
+
+### 7. Add notification page layout to manager's desk: employees list (clickable, similar to on the schedule page), input field for text, send button, etc.
+
+### 8. Setup endpoint on the server to dispatch notifications to the DB.
+
+### 9. Setup UI for receiving notifications on employee end.
+
+10. Have the payroll page calculate the accumulated hours for each employee, based on their wage and punch-time data.
+
+11. Fill out employee profile page to add a navbar (design then implement) with buttons and pages for punch records, notifications and payroll records (use blank pages to start).
+
+12. Make schedule display on employee end navigable by week (with buttons for next and prev)
+
+## NECESSARY ADJUSTMENTS:
+
+### 1. Add Grand Total to payroll screen, plus the whole 'generate paystub' process... Oy vey!
+
+### 2. No punching out when you're not in, or punching in twice, etc...
+
+### 3. Validation messages appear by the punchclock for each successful entry; try again to clear that text whenever submission occurs too.
+
+### 4. Have validated punch-ins that are associated with ongoing shifts display in payroll as 'employee still logged in' or something...
+
+### 5. No snacking or punching after midnight!
+
+### 6. This is higher in terms of priority: make the names appear on the schedule drafts.
+
+### 7. Employee details are visible on the Employee List page.
+
+### 8. Employee information can be edited from the Employee List page.
+
+### 9. Once this capability is added, use it to adjust the wage for each employee (be sure it's in terms of cents, not dollars)
 
 ## STRETCH ARMSTRONG:
 
-### 1. Radio buttons for type of time display <--- Guess who just became a stretch goal!!
+### 1. Radio buttons for type of time display <--- Guess who just became a stretch goal!! UPDATE: Guess what's not happening ever!!
 
 ### 2. Can we make that shift start/end input look like a time value rather than a number??
 
-### 3. Tighten up the look of the schedule display blob so that it's nice and flush with the hour markers on the left.
+3. Tighten up the look of the schedule display blob so that it's nice and flush with the hour markers on the left.
 
 ### 4. Ideal aesthetic for the 'validator' button: a red/green circle (red = not yet valid, green = valid... merge with previous column at that point?) with a tooltip when you mouseover that reads 'approve' or 'revise' depending on validation status.
+
+## NECESSARY TESTS:
+
+1. Check how robust our payroll discriminator page is by validating ONLY a punch-in value for a particular individual's shift... Not bad, it console logs it and doesn't immediately throw a tantrum... Could improve this though.

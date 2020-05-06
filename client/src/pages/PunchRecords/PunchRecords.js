@@ -7,9 +7,18 @@ import { useSelector } from 'react-redux';
 
 function PunchRecords() {
   const punchData = useSelector((state) => state.punchData.punchList);
+  const punchDate = useSelector((state) => state.punchData.datesOnDisplay);
+  console.log(punchDate);
   return (
     <Wrapper>
-      <h1>PUNCHCLOCK ACTIVITY</h1>
+      <h1>
+        PunchClock Activity
+        {punchDate.length > 0
+          ? punchDate.length > 1
+            ? `: ${punchDate[0].slice(6)} - ${punchDate[1].slice(6)}`
+            : `: ${punchDate[0].slice(6)}`
+          : ''}
+      </h1>
       <PunchDisplayPanel></PunchDisplayPanel>
       <div
         style={{
@@ -57,6 +66,7 @@ function PunchRecords() {
                       ? false
                       : true /* this will make it like a toggle switch */
                   }
+                  punchListIndex={idx}
                 />
               </Entry>
             );

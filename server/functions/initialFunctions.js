@@ -129,7 +129,7 @@ const setupDateInDB = async (req, res) => {
     console.log('connecting');
     const db = client.db('optimizer');
     const r = await db
-      .collection('test_punches_vi')
+      .collection('test_punches_vii')
       // add the 'PUNCH-' prefix to the id, just so we can distinguish it from other date-stamped items in the DB:
       .insertOne({ _id: `PUNCH-${date}` });
     assert.equal(1, r.insertedCount);

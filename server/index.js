@@ -17,8 +17,10 @@ const { getEmployeeSched } = require('./functions/getEmployeeSched');
 const {
   punchClock,
   viewPunchesForDate,
+  viewRangeOfPunches,
   validatePunch,
 } = require('./functions/punchclockFunctions');
+const { getValidPunches } = require('./functions/payrollFunctions');
 
 const PORT = 8080;
 
@@ -51,8 +53,13 @@ express()
   //// ** ADMIN ENDPOINTS FOR VIEWING/APPROVING PUNCHCLOCK ACTIVITY:
   // For viewing a single date's punches:
   .get('/api/admin/punches/:date', viewPunchesForDate)
+  // for viewing the punches for a range of dates (post for simplicity, so we can send a list of dates to filter on server side):
+  .post('/api/admin/punches/range/week', viewRangeOfPunches)
   // For approving a single punch:
   .post('/api/admin/punches/validate/:date', validatePunch)
+  //// ** ADMIN ENDPOINTS FOR PAYROLL DATA:
+  // For getting all the validated punch data for a given period:
+  .post('/api/admin/payroll/valids_for_period', getValidPunches)
   // sends the list of employees from the DB (minus their passwords, haha)
   .get('/api/admin/employees', listEmployees)
   // recieves a draft of a week's schedule as one big blob - will parse into dates before uploading to the DB:

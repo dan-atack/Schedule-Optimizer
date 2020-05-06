@@ -26,7 +26,9 @@ const punchClock = async (req, res) => {
     console.log('connection established.');
     const db = client.db('optimizer');
     // remember the args for updateOne: query, newValue:
-    const r = await db.collection('test_punches_vi').updateOne(query, newValue);
+    const r = await db
+      .collection('test_punches_vii')
+      .updateOne(query, newValue);
     assert.equal(1, r.matchedCount);
     assert.equal(1, r.modifiedCount);
     res.status(201).json({
@@ -52,7 +54,7 @@ const viewPunchesForDate = async (req, res) => {
     await client.connect();
     console.log('connecting');
     const db = client.db('optimizer');
-    await db.collection('test_punches_vi').findOne(dbQuery, (err, result) => {
+    await db.collection('test_punches_vii').findOne(dbQuery, (err, result) => {
       result
         ? res.status(200).json({ status: 200, data: Object.values(result) })
         : res.status(404).json({ status: 404, data: 'Data not found' });
@@ -63,6 +65,45 @@ const viewPunchesForDate = async (req, res) => {
   }
 };
 
+// View all punches for a selected date RANGE:
+const viewRangeOfPunches = async (req, res) => {
+  // will recieve a list of dates in the DB's preferred format (with 'PUNCH' prefix) in the req. body:
+  const range = req.body;
+  console.log(range);
+  const client = new MongoClient('mongodb://localhost:27017', {
+    useUnifiedTopology: true,
+  });
+  try {
+    await client.connect();
+    const db = client.db('optimizer');
+    await db
+      .collection('test_punches_vii')
+      .find()
+      .toArray((err, result) => {
+        if (result != null) {
+          const payload = [];
+          // result is the list of punch-date objects, each of which is sub-divided into individual punch objects.
+          // Now we filter by date by going through the DB's returns and matching them to the FE's date string array.
+          if (range.length > 0) {
+            result.forEach((punchdate) => {
+              if (range.includes(punchdate._id)) payload.push(punchdate);
+            });
+          } else {
+            // NOTE: If the range of dates sent by the FE is EMPTY, send all info directly:
+            result.forEach((punchdate) => payload.push(punchdate));
+          }
+          res.status(200).json({ status: 200, data: payload });
+        }
+      });
+  } catch {
+    console.log(
+      "looks like we'll be using the paper schedule for another year, boys."
+    );
+    res.status(404).json({ status: 404, data: 'something terrible happened.' });
+  }
+};
+
+//// ** UPDATING PUNCH INFO AS ADMIN:
 // Validate a punch (as admin):
 const validatePunch = async (req, res) => {
   const { date } = req.params;
@@ -78,7 +119,7 @@ const validatePunch = async (req, res) => {
     await client.connect();
     console.log('are we in?');
     const db = client.db('optimizer');
-    const r = await db.collection('test_punches_vi').updateOne(query, {
+    const r = await db.collection('test_punches_vii').updateOne(query, {
       $set: {
         [punchCode]: {
           employee_id: employee,
@@ -90,9 +131,28 @@ const validatePunch = async (req, res) => {
     });
     assert.equal(1, r.matchedCount);
     assert.equal(1, r.modifiedCount);
+    res.status(201).json({
+      status: 201,
+      updatedData: {
+        employee_id: employee,
+        timeObject: timeObject,
+        punchType: inOrOut,
+        validated: validity,
+      },
+    });
   } catch (err) {
     console.log(err.stack);
+    res.status(404).json({
+      status: 404,
+      updatedData:
+        "there was an error updating this employee's punch data. Please try again later.",
+    });
   }
 };
 
-module.exports = { punchClock, viewPunchesForDate, validatePunch };
+module.exports = {
+  punchClock,
+  viewPunchesForDate,
+  viewRangeOfPunches,
+  validatePunch,
+};

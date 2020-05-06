@@ -2,19 +2,26 @@ import React from 'react';
 import styled from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import GlobalStyles from '../../GlobalStyles';
+import { useSelector } from 'react-redux';
 // PAGES
 import ManagerHome from '../../pages/ManagerHome';
 import EmployeeHome from '../../pages/EmployeeHome';
 import Login from '../../pages/Login';
 
 // Components
+import Logout from '../Logout';
 
 function App() {
+  const currentUser = useSelector((state) => state.currentUser.userName);
   return (
     <Router>
       <GlobalStyles />
       <Wrapper className='App'>
-        <Header>Welcome to the schedule optimizer version 0.0.1!</Header>
+        <Header>
+          <div></div>
+          <h4 style={{ fontStyle: 'oblique' }}>OptiSched version 0.3.0</h4>
+          {currentUser !== '' ? <Logout /> : <> </>}
+        </Header>
         <Switch>
           <Route exact path='/'>
             <Login></Login>
@@ -39,6 +46,8 @@ const Wrapper = styled.div`
 const Header = styled.div`
   width: 100%;
   height: auto;
+  display: grid;
+  grid-template-columns: 1fr 9fr 1fr;
 `;
 
 export default App;

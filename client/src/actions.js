@@ -7,6 +7,11 @@ export const signInUser = (user) => ({
   user,
 });
 
+// Resets the current user state to it's initial values:
+export const logoutUser = () => ({
+  type: 'LOGOUT_USER',
+});
+
 //// ** EMPLOYEE ACTIONS: for fetching, modifying and creating employee data:
 
 // for fetching all info for all employees:
@@ -107,9 +112,31 @@ export const addEmployeeToDate = (date, _id, role, start, finish) => ({
 
 //// ** PUNCHCLOCK DISPLAY ACTIONS:
 
-// get today's punchclock activity into state from server fetch:
-export const getPunchDataForToday = (date, punches) => ({
-  type: 'GET_PUNCH_DATA_FOR_TODAY',
+// get one date's punchclock activity into state from server fetch:
+export const getPunchDataForOneDate = (date, punches) => ({
+  type: 'GET_PUNCH_DATA_FOR_ONE_DATE',
   date,
+  punches,
+});
+
+// get punchclock data for a range of dates:
+export const getPunchDataForDateRange = (dates, punches) => ({
+  type: 'GET_PUNCH_DATA_FOR_RANGE_OF_DATES',
+  dates,
+  punches,
+});
+
+// validate a single punch: dispatch the reply from a (successful) modification of the database:
+export const updatePunchValidation = (punchIndex, punchData) => ({
+  type: 'UPDATE_PUNCH_VALIDATION',
+  punchIndex,
+  punchData,
+});
+
+//// ** PAYROLL ACTIONS:
+
+// get just valid punches for a period into state for payroll calculations:
+export const getValidPunches = (punches) => ({
+  type: 'GET_VALID_PUNCHES',
   punches,
 });

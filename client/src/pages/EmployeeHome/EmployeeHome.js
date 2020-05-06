@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
 import { setEmployeeShifts } from '../../actions';
-import { useParams } from 'react-router-dom';
+import { useParams, Route, Link } from 'react-router-dom';
+import NavButton from '../../components/NavButton';
 import Unauthorized from '../../components/Unauthorized';
 import EmployeeSchedule from '../EmployeeSchedule';
 
@@ -37,23 +38,69 @@ function EmployeeHome() {
   }
   // Which week? Next week is the default:
   // Long form for human eyes:
-  const longFirstDate = moment().day(8).format('LL');
-  const longLastDate = moment().day(14).format('LL');
 
   return (
     <Wrapper>
-      <h1>{employee.userName}'s Main Page</h1>
-      <EmployeeSchedule
-        employeeName={employee.userName}
-        startDate={longFirstDate}
-        finishDate={longLastDate}
-      ></EmployeeSchedule>
+      <h2 style={{ marginBottom: 4 }}>Welcome, {employee.userName}!</h2>
+      <NavBar>
+        <Link to={`/employee/${username}/punches`}>
+          <NavButton label='My Punchclock' />
+        </Link>
+        <Link to={`/employee/${username}/schedule`}>
+          <NavButton label='My Schedule' />
+        </Link>
+        <Link to={`/employee/${username}/paystubs`}>
+          <NavButton label='My Pay Stubs' />
+        </Link>
+        <Link to={`/employee/${username}/notifications`}>
+          <NavButton label='My Notifications' />
+        </Link>
+      </NavBar>
+      <MainArea>
+        <Route path={`/employee/${username}/punches`}>
+          <div>My Punches</div>
+        </Route>
+        <Route path={`/employee/${username}/schedule`}>
+          <EmployeeSchedule employeeName={employee.userName}></EmployeeSchedule>
+        </Route>
+        <Route path={`/employee/${username}/paystubs`}>
+          <div>Show me the Morty!</div>
+        </Route>
+        <Route path={`/employee/${username}/notifications`}>
+          <div>
+            MEMO: Please remember to include new cover sheet on all TPS reports!
+          </div>
+        </Route>
+      </MainArea>
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 4px;
+  background-color: rgb(243, 239, 217);
+`;
+
+const NavBar = styled.div`
+  color: whitesmoke;
+  height: 64px;
+  border: 1px solid black;
+  border-radius: 8px;
+  background-color: rgb(148, 226, 250);
+  display: flex;
+  justify-content: space-around;
+  padding-top: 4px;
+`;
+
+const MainArea = styled.div`
+  border: 1px solid black;
+  border-radius: 8px;
+  margin-top: 8px;
 `;
 
 export default EmployeeHome;

@@ -22,7 +22,10 @@ const Wrapper = styled.div`
   border: 1px solid black;
   display: grid;
   grid-template-columns: 0.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  width: 500px;
+  width: 100%;
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
 `;
 
 export default SchedDisplayBox;

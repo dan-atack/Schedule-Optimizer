@@ -3,22 +3,58 @@ import SchedDisplayBox from '../../components/SchedDisplayBox';
 // import { useSelector } from 'react-redux';
 import moment from 'moment';
 
-function EmployeeSchedule({ employeeName, startDate, finishDate }) {
-  // First get the range of dates:
-  let dates = [];
-  // this will work, provided we're only talking about next week - if not, the initial and final values for i would need to change...
-  for (let i = 8; i <= 14; i++) {
-    // ensure format matches that of the database: moment().DAY, and a dash, not a slash... 'ohhhh, SHUDDER!'
-    const dashed = moment().day(i).format('L').split('/').join('-');
-    dates.push(dashed);
-  }
+function EmployeeSchedule({ employeeName }) {
+  // local state for controlling date display:
+  const [currentWeekStart, setCurrentWeekStart] = React.useState(8);
+  const [dates, setDates] = React.useState([]);
+  const [startDate, setStartDate] = React.useState('');
+  const [finishDate, setFinishDate] = React.useState('');
+  const weekSelect = (start) => {
+    // First get the range of dates:
+    let newDates = [];
+    for (let i = start; i <= start + 6; i++) {
+      const dashed = moment().day(i).format('L').split('/').join('-');
+      newDates.push(dashed);
+    }
+    setDates(newDates);
+    setStartDate(moment().day(start).format('LL'));
+    setFinishDate(
+      moment()
+        .day(start + 6)
+        .format('LL')
+    );
+  };
+  // set default dates for next week when page loads:
+  React.useEffect(() => {
+    weekSelect(currentWeekStart);
+  }, [currentWeekStart]);
   return (
     <div>
-      <div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+        }}
+      >
+        <button
+          style={{ borderRadius: '8px 0px 0px 8px' }}
+          type='button'
+          onMouseUp={() => setCurrentWeekStart(currentWeekStart - 7)}
+        >
+          Prev
+        </button>
         {employeeName}'s Schedule:
         <p>
-          Week of {startDate} - {finishDate}
+          {startDate} - {finishDate}
         </p>
+        <button
+          style={{ borderRadius: '0px 8px 8px 0px' }}
+          type='button'
+          onMouseUp={() => setCurrentWeekStart(currentWeekStart + 7)}
+        >
+          Next
+        </button>
       </div>
       <SchedDisplayBox dates={dates}></SchedDisplayBox>
     </div>

@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 const assert = require('assert');
 
 const getEmployeeSched = async (req, res) => {
-  const { employee, weekof } = req.params;
+  const { employee } = req.params;
   const client = new MongoClient('mongodb://localhost:27017', {
     useUnifiedTopology: true,
   });
