@@ -49,4 +49,48 @@ const getValidPunches = async (req, res) => {
   }
 };
 
-module.exports = { getValidPunches };
+// Function TWO: Submit a week's worth of payroll data to the database:
+
+const submitWeeklyData = async (req, res) => {
+  // Rearrange the data to fit the DB's preferred format:
+  let _ids = [];
+  Object.keys(req.body).forEach((key) => {
+    _ids.push(`EMP-${key}`);
+  });
+  let vals = Object.values(req.body);
+  Object.values(req.body).forEach((value, idx) => {
+    _ids[idx] = _ids[idx] + value.weekOf;
+  });
+  let payload = [];
+  _ids.forEach((id, idx) => {
+    payload.push({
+      _id: id,
+      weekOf: vals[idx]['weekOf'],
+      wage: vals[idx]['wage'],
+      hours: vals[idx]['hours'],
+      earnings: vals[idx]['earnings'],
+      netRevenue: vals[idx]['netRevenue'],
+    });
+  });
+  // Ahh, that's better. Now just send and we'll all get paid.
+  const client = new MongoClient('mongodb://localhost:27017', {
+    useUnifiedTopology: true,
+  });
+  try {
+    await client.connect();
+    console.log('talking to payroll.');
+    const db = client.db('optimizer');
+    const r = await db.collection('payroll').insertMany(payload);
+    assert.equal(payload.length, r.insertedCount);
+    console.log('Do you have my stapler?');
+    client.close();
+    res.status(201).json({
+      status: 201,
+      data: "Yeahhh, I'm going to need you to talk to payroll about that...",
+    });
+  } catch (err) {
+    res.status(404).json('Sir, we have a problem with the payroll...');
+  }
+};
+
+module.exports = { getValidPunches, submitWeeklyData };

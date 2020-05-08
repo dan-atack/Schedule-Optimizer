@@ -1,29 +1,32 @@
 import React from 'react';
 import styled from 'styled-components';
 import ShiftBox from '../ShiftBox';
+import { useSelector } from 'react-redux';
 
 function DayColumn({ day, date, shifts }) {
-  // Convert the number of shifts to a list so we can iterate over it: (is there a better way??)
-  let shiftList = [];
-  for (let i = 1; i <= shifts; i++) {
-    shiftList.push(i);
-  }
+  const draftDate = useSelector((state) => state.draft.dates[date]);
+  console.log(shifts);
+  const shiftList = Object.keys(draftDate).slice(0, shifts);
   return (
     <Wrapper>
       <div>
         <p style={{ fontWeight: 'bold' }}>{day}</p>
         {date.slice(0, 5)}
       </div>
-      {shiftList.map((shift) => {
-        return (
-          <ShiftBox
-            key={Math.random() * 10000000 * shift}
-            relativeSize={1 / shifts}
-            shiftNum={shift}
-            date={date}
-          ></ShiftBox>
-        );
-      })}
+      {shiftList.length > 0 ? (
+        shiftList.map((shift) => {
+          return (
+            <ShiftBox
+              key={Math.random() * 10000000}
+              relativeSize={1 / shifts}
+              shiftNum={shift}
+              date={date}
+            ></ShiftBox>
+          );
+        })
+      ) : (
+        <></>
+      )}
     </Wrapper>
   );
 }

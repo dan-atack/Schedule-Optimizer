@@ -2,13 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import WorkedHoursBox from '../WorkedHoursBox';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateEmployeePay } from '../../actions';
 
 function PayrollRow({ employee, dates, shortDates }) {
+  const dispatch = useDispatch();
+  // still a number here; convert to dollar sign at the last minute:
   const wage = employee.wage;
   const shortId = employee._id.slice(4);
   const punches = useSelector((state) => state.punchData.validatedPunches);
-  //// conditionalize and show employee's punches by date:
   // Create empty object to hold the dates:
   let employeePunchesByDate = {};
   // then add the dates to it: Each date is a sub-object expecting and IN and OUT time (or neither if there was no work that day):
@@ -52,10 +54,7 @@ function PayrollRow({ employee, dates, shortDates }) {
       ) {
         const punchIn = moment.utc(employeePunchesByDate[date]['in']);
         const punchOut = moment.utc(employeePunchesByDate[date]['out']);
-        // // difference equals the difference between the two times, in terms of MINUTES for precision... hallelujah!
-        // const minDifference = moment.duration(punchOut.diff(punchIn))._data
-        //   .minutes;
-        // FOLLOWUP: if there are hours, we need to add them separately, because moment.js seems to have it in for me:
+        // // difference equals the difference between the two times, in terms of hours (fractions will be rounded off later):
         const hourDifference = moment
           .duration(punchOut.diff(punchIn))
           .asHours();
@@ -80,6 +79,14 @@ function PayrollRow({ employee, dates, shortDates }) {
     Object.values(employeePunchesByDate).forEach((date) => {
       cumulativeHours += date.hours;
     });
+    dispatch(
+      updateEmployeePay(
+        shortId,
+        `${dates[0]}--${dates[6]}`,
+        employee.wage,
+        cumulativeHours
+      )
+    );
     return (
       <Wrapper>
         <span>{employee.userName}</span>

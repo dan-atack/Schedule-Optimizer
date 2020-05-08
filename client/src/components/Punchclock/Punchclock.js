@@ -7,9 +7,11 @@ function Punchclock() {
   const scheduledIds = useSelector((state) => state.employeeList.employeeIds);
   // Status message for punch activity:
   const [message, setMessage] = React.useState('');
-
   // Local controlled state for employee ID value:
   const [value, setValue] = React.useState({ value: '' });
+  React.useEffect(() => {
+    setValue({ value: '' });
+  }, [message]);
   function handleValueChange(ev) {
     setValue({ value: ev.target.value });
   }
@@ -40,9 +42,9 @@ function Punchclock() {
         },
       })
         .then((res) => {
-          return res.text();
+          return res.json();
         })
-        .then((reply) => console.log(reply));
+        .then((reply) => setMessage(reply.message));
     } else {
       setMessage('Please enter a valid 4-digit employee ID number.');
     }
@@ -55,6 +57,7 @@ function Punchclock() {
         <label>Please enter your 4-digit employee ID:</label>
         <input
           onChange={handleValueChange}
+          value={value.value}
           type='text'
           placeholder='4-digit ID'
           style={{ width: '50%' }}

@@ -86,7 +86,7 @@ export const assignEmployeeToRole = (
   date,
   shift,
   role,
-  _id,
+  employee,
   start,
   finish
 ) => ({
@@ -94,17 +94,17 @@ export const assignEmployeeToRole = (
   date,
   shift,
   role,
-  _id,
+  employee,
   start,
   finish,
 });
 
 // Finally, the upload version shift assignment function: add all the data about a role to the date directly for uploading to DB:
 
-export const addEmployeeToDate = (date, _id, role, start, finish) => ({
+export const addEmployeeToDate = (date, employee, role, start, finish) => ({
   type: 'ADD_EMPLOYEE_TO_DATE',
   date,
-  _id,
+  employee,
   role,
   start,
   finish,
@@ -139,4 +139,39 @@ export const updatePunchValidation = (punchIndex, punchData) => ({
 export const getValidPunches = (punches) => ({
   type: 'GET_VALID_PUNCHES',
   punches,
+});
+
+//// ** NOTIFICATION ACTIONS: Making sure that you get that memo:
+
+// Add or remove a recipient with one handy action:
+export const toggleRecipient = (recipient) => ({
+  type: 'TOGGLE_RECIPIENT',
+  recipient,
+});
+
+// Removing ALL recipients:
+export const clearRecipients = () => ({
+  type: 'CLEAR_RECIPIENTS',
+});
+
+// Getting an employee's notifications into state:
+export const getEmployeeNotifications = (notifications) => ({
+  type: 'GET_EMPLOYEE_NOTIFICATIONS',
+  notifications,
+});
+
+export const displayMessage = (message) => ({
+  type: 'DISPLAY_MESSAGE',
+  message,
+});
+
+//// ** PAYROLL ACTIONS:
+
+// Add pay data for a given week to employee's payroll state:
+export const updateEmployeePay = (employee, weekOf, wage, hours) => ({
+  type: 'UPDATE_EMPLOYEE_PAY',
+  employee,
+  weekOf,
+  wage,
+  hours,
 });

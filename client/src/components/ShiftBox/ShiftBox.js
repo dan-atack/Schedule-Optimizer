@@ -8,14 +8,13 @@ import { useSelector } from 'react-redux';
 function ShiftBox({ relativeSize, shiftNum, date }) {
   // percent is how we explain that to the styled wrapper:
   const percent = `${(relativeSize * 100).toFixed(0)}%`;
-  // TRY CATCH FOR THE MOTHAF**** WIN BABAY!!
-  try {
-    let roles = useSelector(
-      (state) => state.draft.dates[date][`shift_${shiftNum}`]['roles']
-    );
+  const roles = useSelector(
+    (state) => state.draft.dates[date][shiftNum]['roles']
+  );
+  if (Object.keys(roles).length > 0) {
     return (
       <Wrapper percent={percent}>
-        <h3>Shift {shiftNum}</h3>
+        <h3>Shift {shiftNum.slice(6)}</h3>
         <div>
           {Object.keys(roles).map((role) => {
             return (
@@ -31,10 +30,10 @@ function ShiftBox({ relativeSize, shiftNum, date }) {
         <RoleSelect date={date} shiftNum={shiftNum} />
       </Wrapper>
     );
-  } catch {
+  } else {
     return (
       <Wrapper percent={percent}>
-        <h3>Shift {shiftNum}</h3>
+        <h3>Shift {shiftNum.slice(6)}</h3>
         <RoleSelect date={date} shiftNum={shiftNum} />
       </Wrapper>
     );

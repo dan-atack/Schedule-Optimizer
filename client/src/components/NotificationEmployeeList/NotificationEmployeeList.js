@@ -1,8 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleRecipient, clearRecipients } from '../../actions';
 
 function NotificationEmployeeList() {
+  const dispatch = useDispatch();
+  const handleCheckbox = (ev) => {
+    dispatch(toggleRecipient(ev.target.name));
+  };
   const employees = useSelector((state) => state.employeeList.employees);
   return (
     <Wrapper>
@@ -10,12 +15,21 @@ function NotificationEmployeeList() {
         {employees.map((employee) => {
           return (
             <Worker key={employee._id}>
-              <button type='button'>Add</button>
+              <input
+                id={`${employee._id}`}
+                name={`${employee._id}`}
+                type='checkbox'
+                onChange={handleCheckbox}
+              ></input>
               <span style={{ marginLeft: 8 }}>{employee.userName}</span>
             </Worker>
           );
         })}
       </ul>
+      {/* <p>Out of Order</p>
+      <button type='button' onMouseUp={() => dispatch(clearRecipients())}>
+        Clear Recipients
+      </button> */}
     </Wrapper>
   );
 }
@@ -30,7 +44,7 @@ const Wrapper = styled.div`
   text-align: left;
 `;
 
-const Worker = styled.div`
+const Worker = styled.li`
   padding-left: 4px;
   justify-content: space-around;
   border-bottom: 1px solid black;

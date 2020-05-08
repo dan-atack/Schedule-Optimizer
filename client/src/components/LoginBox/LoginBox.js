@@ -96,9 +96,6 @@ function LoginBox() {
           ENTER
         </button>
       </FormArea>
-
-      {/* <UnstyledButton func={dbTest} label='TEST DATABASE' /> */}
-      {/* <span>Logged in as: {currentUser}</span> */}
     </Box>
   );
 }

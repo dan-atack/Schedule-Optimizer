@@ -54,16 +54,10 @@ function ManagerHome() {
       <GeneralSidebar style={{ gridArea: 'general' }} username={username} />
       <MainDisplay style={{ gridArea: 'main' }}>
         <Route path={`/admin/${username}/create-schedule`}>
-          {/* still need to consider if all schedules (past, pres and future) can use a common Schedule box component... 
-          ... After due consideration, sadly it has been decided that they can NOT. Still, we can probably copy most
-          of what we need, so no big loss...*/}
-          <Schedule period={'new'} />
+          <Schedule period={'new'} display={'edit'} />
         </Route>
-        <Route path={`/admin/${username}/current-schedule`}>
-          <Schedule period={'current'} />
-        </Route>
-        <Route path={`/admin/${username}/previous-schedule`}>
-          <Schedule period={'previous'} />
+        <Route path={`/admin/${username}/view-schedules`}>
+          <Schedule period={'current'} display={'view'} />
         </Route>
         <Route path={`/admin/${username}/employees`}>
           <EmployeesList />

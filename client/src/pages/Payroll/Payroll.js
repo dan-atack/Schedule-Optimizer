@@ -4,6 +4,7 @@ import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
 import { getValidPunches } from '../../actions';
 import PayrollRow from '../../components/PayrollRow';
+import PayrollTotals from '../../components/PayrollTotals';
 
 function Payroll() {
   const dispatch = useDispatch();
@@ -11,6 +12,8 @@ function Payroll() {
   const [weekStart, setWeekStart] = React.useState(-6);
   const [dates, setDates] = React.useState([]);
   const [shortDates, setShortDates] = React.useState([]);
+  // Display the server's reply message if payroll goes through:
+  const [replyMessage, setReplyMessage] = React.useState('');
   function weekSelect() {
     let dates = [];
     let shortDates = [];
@@ -26,11 +29,13 @@ function Payroll() {
   }
   // Run week select for the default week as the page opens; hitting prev or next refreshes it:
   React.useEffect(() => {
+    setReplyMessage('');
     weekSelect();
   }, [weekStart]);
 
   // Get employee names so we can use them to map payroll rows:
   const employees = useSelector((state) => state.employeeList.employees);
+  const payrollData = useSelector((state) => state.payroll.employees);
 
   // And last but not least, the function for fetching all our lovely payroll data:
   const fetchWeeklyPunches = (dates) => {
@@ -48,6 +53,21 @@ function Payroll() {
       .then((reply) => dispatch(getValidPunches(reply.data)));
   };
 
+  // APPROVE PAYROLL: Sends all current payroll data to the DB's PAYROLL collection:
+  const handleApprove = () => {
+    fetch('/api/admin/submit_payroll', {
+      method: 'POST',
+      body: JSON.stringify(payrollData),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((reply) => setReplyMessage(reply.data));
+  };
   // Default fetch fires upon page load:
   if (dates.length > 0) fetchWeeklyPunches(dates);
 
@@ -98,6 +118,11 @@ function Payroll() {
             />
           );
         })}
+        <PayrollTotals />
+        <Approve type='button' onMouseUp={handleApprove}>
+          Approve Payroll
+        </Approve>
+        <h3>{replyMessage}</h3>
       </PayGrid>
     </Wrapper>
   );
@@ -111,6 +136,18 @@ const PayGrid = styled.div`
   width: 100%;
   height: 80vh;
   border: 1px solid green;
+`;
+
+const Approve = styled.button`
+  margin-top: 32px;
+  border: 3px solid rgb(69, 71, 67);
+  border-radius: 16px;
+  height: 64px;
+  width: 128px;
+  background-color: limegreen;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 export default Payroll;

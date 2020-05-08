@@ -13,16 +13,14 @@ const getEmployeeSched = async (req, res) => {
       .collection('testdraft_vii')
       .find()
       .toArray((err, result) => {
+        // Result is a list of dates.
         if (result) {
-          // result is a list of dates:
-          console.log('base fetch result: ', result);
-          // create empty list of shifts to return if they contain the employee's id:
+          // Create empty list of shifts to return if they contain the employee's id:
           let shiftList = [];
           result.forEach((date) => {
-            // the new way brother: each date is comprised of shifts, which are named for the employees themselves:
+            // Each date is comprised of shifts, which are named for the employees themselves:
             if (Object.keys(date.shifts).includes(employee)) {
-              console.log(`${employee} is working on ${date._id}`);
-              // only add shifts for the employee to the return object, INCLUDING THE DATE:
+              // Only add shifts for the employee to the return object, INCLUDING THE DATE:
               shiftList.push({ date: date._id, shift: date.shifts[employee] });
             }
           });

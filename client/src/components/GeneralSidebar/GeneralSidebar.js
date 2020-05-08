@@ -9,11 +9,8 @@ function GeneralSidebar({ username }) {
       <Link to={`/admin/${username}/create-schedule`}>
         <UnstyledButton label={'Create New Schedule'}></UnstyledButton>
       </Link>
-      <Link to={`/admin/${username}/current-schedule`}>
-        <UnstyledButton label={"This week's Schedule"}></UnstyledButton>
-      </Link>
-      <Link to={`/admin/${username}/previous-schedule`}>
-        <UnstyledButton label={"Last week's Schedule"}></UnstyledButton>
+      <Link to={`/admin/${username}/view-schedules`}>
+        <UnstyledButton label={'View Previous Schedules'}></UnstyledButton>
       </Link>
       <Link to={`/admin/${username}/employees`}>
         <UnstyledButton label={'Employees'}></UnstyledButton>

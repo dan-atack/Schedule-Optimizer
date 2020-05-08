@@ -13,10 +13,9 @@ function RoleSelect({ date, shiftNum }) {
   };
   const [role, setRole] = React.useState('');
   const handleRoleSelect = (role) => {
-    console.log(`${role} role added for shift ${shiftNum} on date ${date}`);
     setDropped('none');
     setRole(role);
-    dispatch(addRoleToShift(date, `shift_${shiftNum}`, role));
+    dispatch(addRoleToShift(date, shiftNum, role));
   };
   return (
     <>

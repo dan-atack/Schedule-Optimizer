@@ -132,11 +132,11 @@ Sunday night: Git push again and reevaluate remaining priorities.
 
 6. Validated shifts are listed by employee name on the payroll page
 
-### 7. Add notification page layout to manager's desk: employees list (clickable, similar to on the schedule page), input field for text, send button, etc.
+7. Add notification page layout to manager's desk: employees list (clickable, similar to on the schedule page), input field for text, send button, etc.
 
-### 8. Setup endpoint on the server to dispatch notifications to the DB.
+8. Setup endpoint on the server to dispatch notifications to the DB.
 
-### 9. Setup UI for receiving notifications on employee end.
+9. Setup UI for receiving notifications on employee end.
 
 10. Have the payroll page calculate the accumulated hours for each employee, based on their wage and punch-time data.
 
@@ -144,35 +144,69 @@ Sunday night: Git push again and reevaluate remaining priorities.
 
 12. Make schedule display on employee end navigable by week (with buttons for next and prev)
 
+13. Add sentbox to manager's notifications sidebar (clickable list of all notifications sent)
+
+14. Clicking an item in the sent box brings up the full message and the list of recipients who have seen/not yet seen it.
+
 ## NECESSARY ADJUSTMENTS:
 
-### 1. Add Grand Total to payroll screen, plus the whole 'generate paystub' process... Oy vey!
+1. Fix Schedule Creator module: Add date-adjuster buttons and remove obvious glitches with shift count adjuster.
 
-### 2. No punching out when you're not in, or punching in twice, etc...
+2. Remove This Week/Last Week buttons and consolidate into 'View Prior Schedules' on sidebar.
 
-### 3. Validation messages appear by the punchclock for each successful entry; try again to clear that text whenever submission occurs too.
+3. Make Schedule viewer component for 'View Prior' tab.
 
-### 4. Have validated punch-ins that are associated with ongoing shifts display in payroll as 'employee still logged in' or something...
+4. Make the names appear on the schedule drafts.
 
-### 5. No snacking or punching after midnight!
+5. Don't allow repeats of the same person in one shift.
 
-### 6. This is higher in terms of priority: make the names appear on the schedule drafts.
+6. Add Grand Total to payroll screen, plus the whole 'generate paystub' process... Oy vey!
 
-### 7. Employee details are visible on the Employee List page.
+### 6. No punching out when you're not in, or punching in twice, etc...
 
-### 8. Employee information can be edited from the Employee List page.
+7. Validation messages appear by the punchclock for each successful entry; try again to clear that text whenever submission occurs too.
 
-### 9. Once this capability is added, use it to adjust the wage for each employee (be sure it's in terms of cents, not dollars)
+### 8. Have validated punch-ins that are associated with ongoing shifts display in payroll as 'employee still logged in' or something...
+
+### 9. No snacking or punching after midnight! (John Kerry: "that's a joke, by the way.")
+
+10. Employee details are visible on the Employee List page.
+
+### 11. Employee information can be edited from the Employee List page.
+
+### 12. Once this capability is added, use it to adjust the wage for each employee (be sure it's in terms of cents, not dollars)
+
+13. Employees can be added to the roster from the Employee List page.
+
+### 14. Final hurdles: show employee pay stubs on their pages:
+
+#### 15. Fetch by doing a find() then filtering by employee ID
+
+#### 16. Render info on the page with simple interface.
+
+### 17. If this goes really quickly, try to show their punch status too. Just a simple "you're in / you're out" will be fine.
 
 ## STRETCH ARMSTRONG:
 
-### 1. Radio buttons for type of time display <--- Guess who just became a stretch goal!! UPDATE: Guess what's not happening ever!!
+### 1. Unread messages appear to glow (helloooo SCSS keyframes) in employee inbox.
 
 ### 2. Can we make that shift start/end input look like a time value rather than a number??
 
 3. Tighten up the look of the schedule display blob so that it's nice and flush with the hour markers on the left.
 
 ### 4. Ideal aesthetic for the 'validator' button: a red/green circle (red = not yet valid, green = valid... merge with previous column at that point?) with a tooltip when you mouseover that reads 'approve' or 'revise' depending on validation status.
+
+### 5. Pagination for punch records
+
+### 6. Newest notifications at the top of the employee's inbox
+
+### 7. Add Roles button is blueish
+
+### 8. When a role has an employee it gets greener
+
+### 9. Manager's dashboard has something there to fill the gaping void
+
+### X. Condense punch records list to IN/OUT for a person in one column.
 
 ## NECESSARY TESTS:
 

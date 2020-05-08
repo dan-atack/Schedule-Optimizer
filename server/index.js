@@ -20,7 +20,17 @@ const {
   viewRangeOfPunches,
   validatePunch,
 } = require('./functions/punchclockFunctions');
-const { getValidPunches } = require('./functions/payrollFunctions');
+const {
+  getValidPunches,
+  submitWeeklyData,
+} = require('./functions/payrollFunctions');
+const {
+  postNotification,
+  getNotifications,
+  updateReadStatus,
+  getAllNotifications,
+} = require('./functions/notificationFunctions');
+const { addNewEmployee } = require('./functions/employeeDataFunctions');
 
 const PORT = 8080;
 
@@ -42,6 +52,7 @@ express()
   .use('/', express.static(__dirname + '/'))
 
   // ENDPOINTS: must all be prefaced with '/api/' for the FE to not get confused!
+  //// ** LOGIN ENDPOINTS - Everything related to logging into the app:
   // login page: recieve employee id and pw; send back confirmation (NOTE: And retain the id of the logged-in employee??)
   .post('/api/login', loginPage)
   // get employee ids (future upgrade returns only the id's of people on TODAY's schedule) to assist with punchclock activity:
@@ -62,9 +73,24 @@ express()
   .post('/api/admin/payroll/valids_for_period', getValidPunches)
   // sends the list of employees from the DB (minus their passwords, haha)
   .get('/api/admin/employees', listEmployees)
+  //// ** SCHEDULE ENDPOINTS:
   // recieves a draft of a week's schedule as one big blob - will parse into dates before uploading to the DB:
   .post('/api/admin/draft-schedule', uploadScheduleDraft)
   // what we need now is an endpoint for an individual employee's schedule for a given week:
   .get('/api/schedule/:employee/:weekof', getEmployeeSched) // week of = first date in the selected week
+  //// ** NOTIFICATION ENDPOINTS:
+  // admin endpoint for posting a notification:
+  .post('/api/admin/send_notification', postNotification)
+  // admin endpoint for viewing read status of all previously sent messages:
+  .get('/api/admin/view_all_notifications', getAllNotifications)
+  // employee endpoint for getting notifications:
+  .get('/api/get_notifications/:employee', getNotifications)
+  // employee endpoint for updating the read status of a notification:
+  .post('/api/update_read_status', updateReadStatus)
+  //// ** PAYROLL ENDPOINTS:
+  // admin endpoint for sending payroll data to the DB:
+  .post('/api/admin/submit_payroll', submitWeeklyData)
+  //// ** ADD EMPLOYEE ENDPOINT:
+  .post('/api/admin/add_new_employee', addNewEmployee)
 
   .listen(PORT, () => console.log(`listening on port ${PORT}`));

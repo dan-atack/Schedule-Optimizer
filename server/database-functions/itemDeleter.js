@@ -21,7 +21,7 @@ const deleteBadPunches = async () => {
   }
 };
 
-const docReplacer = async () => {
+const docUpdater = async () => {
   const client = new MongoClient('mongodb://localhost:27017', {
     useUnifiedTopology: true,
   });
@@ -29,30 +29,16 @@ const docReplacer = async () => {
     await client.connect();
     console.log('connecting');
     const db = client.db('optimizer');
-    await db.collection('test_punches_vii').insertOne({
-      _id: 'PUNCH-05-04-2020',
-      'EMP-2001-PUNCH-IN': {
-        employee_id: '2001',
-        timeObject: '2020-05-04T15:09:28.301Z',
-        punchType: 'IN',
-        validated: true,
-      },
-      'EMP-2002-PUNCH-IN': {
-        employee_id: '2002',
-        timeObject: '2020-05-04T15:09:31.739Z',
-        punchType: 'IN',
-        validated: true,
-      },
-      'EMP-2003-PUNCH-IN': {
-        employee_id: '2003',
-        timeObject: '2020-05-04T15:09:34.629Z',
-        punchType: 'IN',
-        validated: true,
-      },
-    });
+    // update func seems to prefer that these values are defined BEFORE calling updateOne... don't ask why!
+    const query = { _id: 'MEMO-2020-05-06T14:33:14-04:00' };
+    const newValue = { $set: { subject: 'TPS Reports' } };
+    const r = await db.collection('notifications').updateOne(query, newValue);
+    assert.equal(1, r.matchedCount);
+    assert.equal(1, r.modifiedCount);
+    console.log('subject added');
   } catch (err) {
-    console.log(err);
+    console.log(err.stack);
   }
 };
 
-docReplacer();
+docUpdater();

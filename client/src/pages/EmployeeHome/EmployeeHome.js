@@ -2,11 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useSelector, useDispatch } from 'react-redux';
-import { setEmployeeShifts } from '../../actions';
+import { setEmployeeShifts, getEmployeeNotifications } from '../../actions';
 import { useParams, Route, Link } from 'react-router-dom';
 import NavButton from '../../components/NavButton';
 import Unauthorized from '../../components/Unauthorized';
 import EmployeeSchedule from '../EmployeeSchedule';
+import EmployeeNotifications from '../EmployeeNotifications';
 
 function EmployeeHome() {
   // First things first, grab the employee's name from state to show in on their dashboard and fetch their shifts:
@@ -18,13 +19,20 @@ function EmployeeHome() {
   // No slashes in the url request!!!
   const urlFirstDate = firstDateNextWeek.split('/').join('-');
   // fetch the schedule data and store it in Redux:
-
   React.useEffect(() => {
     fetch(`/api/schedule/${employee._id}/${urlFirstDate}`)
       .then((res) => {
         return res.json();
       })
       .then((reply) => dispatch(setEmployeeShifts(reply.data)));
+  }, []);
+  // fetch employee's notifications and quickly stash them too:
+  React.useEffect(() => {
+    fetch(`/api/get_notifications/${employee._id}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((reply) => dispatch(getEmployeeNotifications(reply.data)));
   }, []);
 
   // Privacy 101: Don't let anyone see the page if they're not logged in with the appropriate user name:
@@ -36,8 +44,6 @@ function EmployeeHome() {
       />
     );
   }
-  // Which week? Next week is the default:
-  // Long form for human eyes:
 
   return (
     <Wrapper>
@@ -67,9 +73,7 @@ function EmployeeHome() {
           <div>Show me the Morty!</div>
         </Route>
         <Route path={`/employee/${username}/notifications`}>
-          <div>
-            MEMO: Please remember to include new cover sheet on all TPS reports!
-          </div>
+          <EmployeeNotifications employee={employee}></EmployeeNotifications>
         </Route>
       </MainArea>
     </Wrapper>

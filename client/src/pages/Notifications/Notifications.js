@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import ScheduleSidebar from '../../components/NotificationSidebar';
 import NotificationSidebar from '../../components/NotificationSidebar';
+import NotificationEmployeeList from '../../components/NotificationEmployeeList';
 import NotificationInput from '../../components/NotificationInput';
 
 function Notifications() {
@@ -10,7 +10,10 @@ function Notifications() {
       <h1 style={{ gridArea: 'head' }}>InterOffice Memoranda Wizard</h1>
       <NotificationSidebar></NotificationSidebar>
       <NotificationInput />
-      <Sentbox>Sentbox</Sentbox>
+      <Recipients>
+        <h3>Select Recipient/s</h3>
+        <NotificationEmployeeList></NotificationEmployeeList>
+      </Recipients>
       <div
         style={{
           gridArea: 'opts',
@@ -19,8 +22,10 @@ function Notifications() {
           justifyContent: 'space-around',
         }}
       >
-        <button style={{ height: 64, width: '25%' }}>A</button>
-        <button style={{ height: 64, width: '25%' }}>B</button>
+        <button style={{ height: 64, width: '25%' }}>Emojis?</button>
+        <button style={{ height: 64, width: '25%' }}>
+          Send Termination Notice
+        </button>
       </div>
     </Wrapper>
   );
@@ -38,7 +43,7 @@ const Wrapper = styled.div`
   grid-template-columns: 1fr 1fr 1fr 1fr;
 `;
 
-const Sentbox = styled.div`
+const Recipients = styled.div`
   border: 1px solid black;
   grid-area: send;
 `;

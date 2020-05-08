@@ -1,12 +1,14 @@
 const { MongoClient } = require('mongodb');
 const assert = require('assert');
 
-// Might end up redistributing these to a few different files.. For now there's just 2 functions in here:
+// Might end up redistributing these to a few different files.. For now there's now 4 functions in here:
 // 1 - The Login page handler
 // 2 - The Employee list getter
+// 3 - The Working-Today employee ID getter
+// 4 - The empty date adder for the punch-log database (attempts to add a new date to the punchclock whenever the app is opened)
 
-// primary login function takes a userid/pw combo, checks it against the DB, and notifies the FE if the login attempt is good:
-
+// Function One:
+// Primary login function takes a userid/pw combo, checks it against the DB, and notifies the FE if the login attempt is good:
 const loginPage = async (req, res) => {
   const { userId, pw } = req.body;
   const client = new MongoClient('mongodb://localhost:27017', {
@@ -51,6 +53,8 @@ const loginPage = async (req, res) => {
   }
 };
 
+// Function Two:
+// Retrieve a list of all employees
 const listEmployees = async (req, res) => {
   const client = new MongoClient('mongodb://localhost:27017', {
     useUnifiedTopology: true,
@@ -88,6 +92,7 @@ const listEmployees = async (req, res) => {
   }
 };
 
+// Function Three:
 // Get ID's for all employees who are working today:
 const listScheduledEmployees = async (req, res) => {
   const client = new MongoClient('mongodb://localhost:27017', {
@@ -119,6 +124,8 @@ const listScheduledEmployees = async (req, res) => {
   }
 };
 
+// Function Four:
+// Add an (empty) date to the database's punchdates collection:
 const setupDateInDB = async (req, res) => {
   const date = req.body.date;
   const client = new MongoClient('mongodb://localhost:27017', {

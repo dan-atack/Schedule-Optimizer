@@ -8,6 +8,7 @@ import produce from 'immer';
 const initialState = {
   // this will be a list-like object containing seven date objects, each of which contains a number of shift objects...
   dates: {},
+  shifts: 0,
 };
 
 export default function draftReducer(state = initialState, action) {
@@ -16,7 +17,13 @@ export default function draftReducer(state = initialState, action) {
       return produce(state, (draftState) => {
         // no pun intended, although it is funny timing that immer was first introduced for the 'drafts' reducer... it was meant to be!
         // BTW all we're doing here is just adding some empty objects to correspond with the dates that will be in the schedule draft:
-        draftState.dates[action.date] = {};
+        // UPDATE: If a date already exists, don't wipe it clear!!!!!!!!
+        if (!draftState.dates[action.date]) {
+          draftState.dates[action.date] = {};
+          for (let i = 1; i <= draftState.shifts; i++) {
+            draftState.dates[action.date][`shift_${i}`] = { roles: {} };
+          }
+        }
       });
     }
     // a more gradual approach to making shifts: first divide each date in the draft into empty shift boxes:
@@ -24,15 +31,18 @@ export default function draftReducer(state = initialState, action) {
       // divide every date into shifts by using the date names as keys:
       return produce(state, (draftState) => {
         // for the number of shifts, give each date one empty 'shift' object:
-        for (let i = 1; i <= action.numShifts; i++) {
-          Object.keys(draftState.dates).forEach((date) => {
-            // each shift must be setup to take in roles, as well as having a counter for the amount of copies of each role:
-            draftState.dates[date][`shift_${i}`] = { roles: {} };
-          });
+        if (Object.keys(draftState.dates).length > 0) {
+          for (let i = draftState.shifts + 1; i <= action.numShifts; i++) {
+            Object.keys(draftState.dates).forEach((date) => {
+              draftState.dates[date][`shift_${i}`] = { roles: {} };
+            });
+          }
+          draftState.shifts = action.numShifts;
         }
       });
     }
     case 'ADD_ROLE_TO_SHIFT': {
+      console.log(action.shift);
       // now we get a bit more specific: assign a role (sans employee) to an individual shift:
       return produce(state, (draftState) => {
         // count how many versions of the role are already there (if any) and add one to the counter:
@@ -57,10 +67,8 @@ export default function draftReducer(state = initialState, action) {
     }
     case 'ASSIGN_EMPLOYEE_TO_ROLE': {
       return produce(state, (draftState) => {
-        draftState.dates[action.date][`shift_${action.shift}`]['roles'][
-          action.role
-        ] = {
-          employee: action._id,
+        draftState.dates[action.date][action.shift]['roles'][action.role] = {
+          employee: action.employee,
           start: action.start,
           finish: action.finish,
         };

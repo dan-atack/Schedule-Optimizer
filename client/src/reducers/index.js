@@ -6,6 +6,8 @@ import schedule from './scheduleReducer';
 import draft from './draftReducer';
 import uploadVersion from './uploadReducer';
 import punchData from './punchDataReducer';
+import notification from './notificationReducer';
+import payroll from './payrollReducer';
 
 export default combineReducers({
   currentUser,
@@ -14,4 +16,6 @@ export default combineReducers({
   uploadVersion,
   draft,
   punchData,
+  notification,
+  payroll,
 });
