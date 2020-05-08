@@ -4,6 +4,7 @@ const initialState = {
   employees: {},
   // we'll apply taxes in one shot when the data is uploaded (0.3 = 30% flat rate):
   taxRate: 0.3,
+  paystubs: [],
 };
 
 export default function payrollReducer(state = initialState, action) {
@@ -31,6 +32,15 @@ export default function payrollReducer(state = initialState, action) {
         draftState.employees[action.employee]['netRevenue'] =
           action.hours * action.wage * (1 - draftState.taxRate);
       });
+    }
+    case 'GET_EMPLOYEE_PAYSTUBS': {
+      return {
+        ...state,
+        paystubs: action.paystubs,
+      };
+    }
+    case 'LOGOUT_USER': {
+      return initialState;
     }
     default:
       return state;

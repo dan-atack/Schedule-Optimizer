@@ -23,6 +23,7 @@ const {
 const {
   getValidPunches,
   submitWeeklyData,
+  getEmployeePaystubs,
 } = require('./functions/payrollFunctions');
 const {
   postNotification,
@@ -71,6 +72,10 @@ express()
   //// ** ADMIN ENDPOINTS FOR PAYROLL DATA:
   // For getting all the validated punch data for a given period:
   .post('/api/admin/payroll/valids_for_period', getValidPunches)
+  // admin endpoint for sending payroll data to the DB:
+  .post('/api/admin/submit_payroll', submitWeeklyData)
+  // employee enpoint for getting paystubs:
+  .get('/api/get_paystubs/:employee', getEmployeePaystubs)
   // sends the list of employees from the DB (minus their passwords, haha)
   .get('/api/admin/employees', listEmployees)
   //// ** SCHEDULE ENDPOINTS:
@@ -87,9 +92,6 @@ express()
   .get('/api/get_notifications/:employee', getNotifications)
   // employee endpoint for updating the read status of a notification:
   .post('/api/update_read_status', updateReadStatus)
-  //// ** PAYROLL ENDPOINTS:
-  // admin endpoint for sending payroll data to the DB:
-  .post('/api/admin/submit_payroll', submitWeeklyData)
   //// ** ADD EMPLOYEE ENDPOINT:
   .post('/api/admin/add_new_employee', addNewEmployee)
 

@@ -8,10 +8,17 @@ import NavButton from '../../components/NavButton';
 import Unauthorized from '../../components/Unauthorized';
 import EmployeeSchedule from '../EmployeeSchedule';
 import EmployeeNotifications from '../EmployeeNotifications';
+import EmployeePaystubs from '../EmployeePaystubs';
 
 function EmployeeHome() {
   // First things first, grab the employee's name from state to show in on their dashboard and fetch their shifts:
   const employee = useSelector((state) => state.currentUser);
+  // Then, get today's punches so we can see if the particular individual is punched in:
+  const dailyPunches = useSelector((state) => state.punchData.todaysPunches);
+  const myPunchStatus = dailyPunches
+    .slice(1)
+    .filter((punch) => punch.employee_id === employee._id.slice(4));
+  console.log(myPunchStatus);
   // Then, prepare to get the employee's specific shifts into state:
   const dispatch = useDispatch();
   // start of (next) week - HINT: USE DAY, not DATE:
@@ -64,13 +71,22 @@ function EmployeeHome() {
       </NavBar>
       <MainArea>
         <Route path={`/employee/${username}/punches`}>
-          <div>My Punches</div>
+          <div>
+            <h3>My Punch Status:</h3>
+            <MyPunch punchedIn={myPunchStatus.length}>
+              {myPunchStatus.length === 1
+                ? `Punched in at ${moment(myPunchStatus[0].timeObject).format(
+                    'LT'
+                  )}`
+                : 'Punched Out'}
+            </MyPunch>
+          </div>
         </Route>
         <Route path={`/employee/${username}/schedule`}>
           <EmployeeSchedule employeeName={employee.userName}></EmployeeSchedule>
         </Route>
         <Route path={`/employee/${username}/paystubs`}>
-          <div>Show me the Morty!</div>
+          <EmployeePaystubs employee={employee} />
         </Route>
         <Route path={`/employee/${username}/notifications`}>
           <EmployeeNotifications employee={employee}></EmployeeNotifications>
@@ -105,6 +121,15 @@ const MainArea = styled.div`
   border: 1px solid black;
   border-radius: 8px;
   margin-top: 8px;
+`;
+
+const MyPunch = styled.h4`
+  margin: 16px;
+  padding: 8px;
+  border: 2px solid rgb(69, 71, 67);
+  border-radius: 8px;
+  background-color: ${(props) =>
+    props.punchedIn === 1 ? 'limegreen' : 'rgb(243, 239, 217)'};
 `;
 
 export default EmployeeHome;

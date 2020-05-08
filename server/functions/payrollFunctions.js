@@ -93,4 +93,35 @@ const submitWeeklyData = async (req, res) => {
   }
 };
 
-module.exports = { getValidPunches, submitWeeklyData };
+// Function THREE: Get individual employee's payroll info:
+
+const getEmployeePaystubs = async (req, res) => {
+  const { employee } = req.params;
+  console.log(employee);
+  const client = new MongoClient('mongodb://localhost:27017', {
+    useUnifiedTopology: true,
+  });
+  try {
+    await client.connect();
+    console.log('get da money');
+    const db = client.db('optimizer');
+    const r = await db
+      .collection('payroll')
+      .find()
+      .toArray((err, result) => {
+        if (result) {
+          // filter for the particular employee:
+          const employeePaystubs = result.filter(
+            (stub) => stub._id.slice(0, 8) === employee
+          );
+          res.status(200).json({ status: 200, data: employeePaystubs });
+        } else {
+          res.status(404).json({ status: 404, data: err });
+        }
+      });
+  } catch {
+    console.log("Yeah you're gonna have to talk to payroll about that...");
+  }
+};
+
+module.exports = { getValidPunches, submitWeeklyData, getEmployeePaystubs };

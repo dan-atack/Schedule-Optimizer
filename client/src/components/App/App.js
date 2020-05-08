@@ -19,7 +19,7 @@ function App() {
       <Wrapper className='App'>
         <Header>
           <div></div>
-          <h4 style={{ fontStyle: 'oblique' }}>OptiSched version 0.3.0</h4>
+          <h4 style={{ fontStyle: 'oblique' }}>Schedulizer 3000</h4>
           {currentUser !== '' ? <Logout /> : <> </>}
         </Header>
         <Switch>

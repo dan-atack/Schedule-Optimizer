@@ -69,7 +69,6 @@ const viewPunchesForDate = async (req, res) => {
 const viewRangeOfPunches = async (req, res) => {
   // will recieve a list of dates in the DB's preferred format (with 'PUNCH' prefix) in the req. body:
   const range = req.body;
-  console.log(range);
   const client = new MongoClient('mongodb://localhost:27017', {
     useUnifiedTopology: true,
   });

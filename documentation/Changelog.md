@@ -162,29 +162,29 @@ Sunday night: Git push again and reevaluate remaining priorities.
 
 6. Add Grand Total to payroll screen, plus the whole 'generate paystub' process... Oy vey!
 
-### 6. No punching out when you're not in, or punching in twice, etc...
+7. No punching out when you're not in, or punching in twice, etc...
 
-7. Validation messages appear by the punchclock for each successful entry; try again to clear that text whenever submission occurs too.
+8. Validation messages appear by the punchclock for each successful entry; try again to clear that text whenever submission occurs too.
 
-### 8. Have validated punch-ins that are associated with ongoing shifts display in payroll as 'employee still logged in' or something...
+### 9. Have validated punch-ins that are associated with ongoing shifts display in payroll as 'employee still logged in' or something...
 
-### 9. No snacking or punching after midnight! (John Kerry: "that's a joke, by the way.")
+10. No snacking or punching after midnight! (John Kerry: "that's a joke, by the way.")
 
-10. Employee details are visible on the Employee List page.
+11. Employee details are visible on the Employee List page.
 
-### 11. Employee information can be edited from the Employee List page.
+### 12. Employee information can be edited from the Employee List page.
 
-### 12. Once this capability is added, use it to adjust the wage for each employee (be sure it's in terms of cents, not dollars)
+### 13. Once this capability is added, use it to adjust the wage for each employee (be sure it's in terms of cents, not dollars)
 
-13. Employees can be added to the roster from the Employee List page.
+14. Employees can be added to the roster from the Employee List page.
 
-### 14. Final hurdles: show employee pay stubs on their pages:
+15. Final hurdles: show employee pay stubs on their pages:
 
-#### 15. Fetch by doing a find() then filtering by employee ID
+16. Fetch by doing a find() then filtering by employee ID
 
-#### 16. Render info on the page with simple interface.
+17. Render info on the page with simple interface.
 
-### 17. If this goes really quickly, try to show their punch status too. Just a simple "you're in / you're out" will be fine.
+18. If this goes really quickly, try to show their punch status too. Just a simple "you're in / you're out" will be fine.
 
 ## STRETCH ARMSTRONG:
 

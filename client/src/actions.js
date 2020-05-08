@@ -133,6 +133,12 @@ export const updatePunchValidation = (punchIndex, punchData) => ({
   punchData,
 });
 
+// Get today's punches to see current statuses and maybe even to some punchclock control!
+export const getTodaysPunches = (punches) => ({
+  type: 'GET_TODAYS_PUNCHES',
+  punches,
+});
+
 //// ** PAYROLL ACTIONS:
 
 // get just valid punches for a period into state for payroll calculations:
@@ -174,4 +180,10 @@ export const updateEmployeePay = (employee, weekOf, wage, hours) => ({
   weekOf,
   wage,
   hours,
+});
+
+// get employee paystubs:
+export const getEmployeePaystubs = (paystubs) => ({
+  type: 'GET_EMPLOYEE_PAYSTUBS',
+  paystubs,
 });

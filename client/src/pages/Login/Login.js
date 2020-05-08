@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
-import { getScheduledEmployeeIds } from '../../actions';
+import { getScheduledEmployeeIds, getTodaysPunches } from '../../actions';
 import LoginBox from '../../components/LoginBox';
 import Punchclock from '../../components/Punchclock';
 
@@ -27,6 +27,14 @@ function Login() {
       return res.json();
     })
     .then((reply) => console.log(reply.message));
+  // Lastly here, get the punch data for the day and keep that in state to see who's in and out at the moment:
+  React.useEffect(() => {
+    fetch(`/api/admin/punches/${moment().format('L').split('/').join('-')}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((reply) => dispatch(getTodaysPunches(reply.data)));
+  }, []);
   return (
     <Wrapper>
       <Register>

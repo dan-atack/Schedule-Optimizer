@@ -13,6 +13,16 @@ import Notifications from '../Notifications';
 import EmployeesList from '../EmployeesList';
 import PunchRecords from '../PunchRecords';
 import Payroll from '../Payroll';
+// IMAGES:
+import Motivational_poster_01 from '../../assets/Motivational_poster_01.jpg';
+import Motivational_poster_02 from '../../assets/Motivational_poster_02.jpg';
+import Motivational_poster_03 from '../../assets/Motivational_poster_03.jpg';
+
+const posters = {
+  poster_1: Motivational_poster_03,
+  poster_2: Motivational_poster_02,
+  poster_3: Motivational_poster_03,
+};
 
 function ManagerHome() {
   // We'll fetch the names of the employees in the DB as soon as the manager's page loads and put them into local state for use
@@ -53,6 +63,11 @@ function ManagerHome() {
       </Dashboard>
       <GeneralSidebar style={{ gridArea: 'general' }} username={username} />
       <MainDisplay style={{ gridArea: 'main' }}>
+        <Route exact path={`/admin/${username}`}>
+          <HomePage
+            poster={posters[`poster_${Math.ceil(Math.random() * 3)}`]}
+          />
+        </Route>
         <Route path={`/admin/${username}/create-schedule`}>
           <Schedule period={'new'} display={'edit'} />
         </Route>
@@ -97,6 +112,12 @@ const MainDisplay = styled.div`
   text-align: center;
   height: 100%;
   border: 1px solid black;
+`;
+
+const HomePage = styled.div`
+  background: url(${(props) => props.poster}) no-repeat;
+  background-size: 86vw 85vh;
+  height: 100%;
 `;
 
 export default ManagerHome;

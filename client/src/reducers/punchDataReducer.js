@@ -5,6 +5,7 @@ const initialState = {
   datesOnDisplay: [],
   punchList: [],
   validatedPunches: [],
+  todaysPunches: [],
 };
 
 export default function punchDataReducer(state = initialState, action) {
@@ -44,6 +45,12 @@ export default function punchDataReducer(state = initialState, action) {
           draftState.validatedPunches.push(punch)
         );
       });
+    }
+    case 'GET_TODAYS_PUNCHES': {
+      return {
+        ...state,
+        todaysPunches: Object.values(action.punches),
+      };
     }
     default:
       return state;

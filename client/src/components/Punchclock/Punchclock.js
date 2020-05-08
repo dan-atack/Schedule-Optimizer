@@ -4,12 +4,16 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 
 function Punchclock() {
+  // get employee ID's to protect against random numbers:
   const scheduledIds = useSelector((state) => state.employeeList.employeeIds);
+  // get current punches to protect against punch spamming:
+  const punchedToday = useSelector((state) => state.punchData.todaysPunches);
   // Status message for punch activity:
   const [message, setMessage] = React.useState('');
   // Local controlled state for employee ID value:
   const [value, setValue] = React.useState({ value: '' });
   React.useEffect(() => {
+    // clear employee's code after their punch is completed:
     setValue({ value: '' });
   }, [message]);
   function handleValueChange(ev) {
@@ -17,8 +21,15 @@ function Punchclock() {
   }
   // Punch button handler:
   function punch(inOrOut) {
-    // only allow valid ID numbers to punch in or out:
-    if (scheduledIds.includes(value.value)) {
+    // only allow valid ID numbers to punch in or out, AND only let people punch in or out once:
+    const hasAlreadyPunched = punchedToday
+      .slice(1)
+      .filter(
+        (punch) =>
+          punch.punchType === inOrOut && punch.employee_id === value.value
+      );
+    console.log(hasAlreadyPunched.length);
+    if (scheduledIds.includes(value.value) && hasAlreadyPunched.length === 0) {
       // if the punch is good, clear the message and value fields (looks neater):
       setMessage('');
       // create 2 moments: a strng (for the punch's _id in the DB):
@@ -45,6 +56,8 @@ function Punchclock() {
           return res.json();
         })
         .then((reply) => setMessage(reply.message));
+    } else if (hasAlreadyPunched.length > 0) {
+      setMessage(`You have already punched ${inOrOut}!`);
     } else {
       setMessage('Please enter a valid 4-digit employee ID number.');
     }
