@@ -134,7 +134,7 @@ const Wrapper = styled.div`
 
 const PayGrid = styled.div`
   width: 100%;
-  height: 80vh;
+  height: auto;
   border: 1px solid green;
 `;
 

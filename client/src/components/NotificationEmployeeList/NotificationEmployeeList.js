@@ -37,7 +37,7 @@ function NotificationEmployeeList() {
 const Wrapper = styled.div`
   border: 1px solid black;
   border-radius: 4px;
-  height: 35%;
+  height: auto;
   width: 90%;
   margin: 5%;
   padding: 2px;
