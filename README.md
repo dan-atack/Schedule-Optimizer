@@ -82,7 +82,7 @@
 
 5. Flowcharts: At the very beginning of the project I drew a few pictures of how the UI should look, and how the data would flow from DB to server to FE and vice versa, as well as some basic sketches of how the database would be structured. These were invaluable and I should have done even more of them before jumping into the actual coding, as nothing hinders a project more than realizing mid-way through developing something that you don't have a crystal-clear picture of how things should be structured. I think the fact that I'm still quite new to coding makes some mid-stream rethinking inevitable, but having a diagram that you can consult really helps to keep you on track, and making such a diagram forces you to think through a lot of details before you get started. Plus they're fun to make!
 
-6. Directory organization: As the project grew so did the amount of components, pages, and server endpoints, and by the end they were quite daunting and not particularly navigable. Lots of commenting throughout the code helped to alleviate this, but I would definitely give more thought to organizing the file structure of my next project. Even though it doesn't directly affect the App's functionality it makes a big difference in the process of developing and fixing features once they've been added.
+6. Directory organization: As the project grew so did the amount of components, pages, and server endpoints, and by the end they were quite daunting and not particularly navigable. Lots of commenting throughout the code helped to alleviate this, but I would definitely give more thought to organizing the file structure of my next project.
 
 ## Coming Soon: The Schedulizer v.1.1!
 
@@ -96,7 +96,7 @@
 
 4. Ability for manager to remove invalid punches from the database.
 
-5. Behind-the-scenes cleanup of the code and file directories for better organization.
+5. IN PROGRESS - Behind-the-scenes cleanup of the code and file directories for better organization.
 
 6. Pagination for pages which might grow to have long lists, such as punchclock records and payroll.
 

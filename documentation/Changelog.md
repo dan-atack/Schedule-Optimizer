@@ -166,25 +166,35 @@ Sunday night: Git push again and reevaluate remaining priorities.
 
 8. Validation messages appear by the punchclock for each successful entry; try again to clear that text whenever submission occurs too.
 
-### 9. Have validated punch-ins that are associated with ongoing shifts display in payroll as 'employee still logged in' or something...
+9. No snacking or punching after midnight! (John Kerry: "that's a joke, by the way.")
 
-10. No snacking or punching after midnight! (John Kerry: "that's a joke, by the way.")
+10. Employee details are visible on the Employee List page.
 
-11. Employee details are visible on the Employee List page.
+11. Employees can be added to the roster from the Employee List page.
 
-### 12. Employee information can be edited from the Employee List page.
+12. Final hurdles: show employee pay stubs on their pages:
 
-### 13. Once this capability is added, use it to adjust the wage for each employee (be sure it's in terms of cents, not dollars)
+13. Fetch by doing a find() then filtering by employee ID
 
-14. Employees can be added to the roster from the Employee List page.
+14. Render info on the page with simple interface.
 
-15. Final hurdles: show employee pay stubs on their pages:
+15. If this goes really quickly, try to show their punch status too. Just a simple "you're in / you're out" will be fine.
 
-16. Fetch by doing a find() then filtering by employee ID
+## BUGS TO SQUISH:
 
-17. Render info on the page with simple interface.
+### 1. If there has been no use of the app on a given date, the punchclock validator endpoint needs to return an empty array to prevent an error.
 
-18. If this goes really quickly, try to show their punch status too. Just a simple "you're in / you're out" will be fine.
+### 2. Individual employee paystubs need keys??
+
+## ADDITIONAL FEATURES NEEDED:
+
+### 1. Have validated punch-ins that are associated with ongoing shifts display in payroll as 'employee still logged in' or something...
+
+### 2. Employee information can be edited from the Employee List page.
+
+### 3. Once this capability is added, use it to adjust the wage for each employee (be sure it's in terms of cents, not dollars)
+
+### 4. Adjust schedule blob so it shows the correct shift END time (currently goes an hour late I believe).
 
 ## STRETCH ARMSTRONG:
 
@@ -206,8 +216,4 @@ Sunday night: Git push again and reevaluate remaining priorities.
 
 ### 9. Manager's dashboard has something there to fill the gaping void
 
-### X. Condense punch records list to IN/OUT for a person in one column.
-
-## NECESSARY TESTS:
-
-1. Check how robust our payroll discriminator page is by validating ONLY a punch-in value for a particular individual's shift... Not bad, it console logs it and doesn't immediately throw a tantrum... Could improve this though.
+### 10. Condense punch records list to IN/OUT for a person in one column.
